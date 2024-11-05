@@ -8,6 +8,7 @@ import com.sparta.myselectshop.naver.service.NaverApiService;
 import com.sparta.myselectshop.repository.ProductRepository;
 import com.sparta.myselectshop.repository.UserRepository;
 import com.sparta.myselectshop.service.UserService;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -37,21 +38,24 @@ public class TestDataRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         // 테스트 User 생성
         User testUser = new User("Robbie", passwordEncoder.encode("1234"), "robbie@sparta.com", UserRoleEnum.USER);
-        testUser = userRepository.save(testUser);
+        Optional<User> isUser = userRepository.findByEmail(testUser.getEmail());
+        if (isUser.isEmpty()) {
+            testUser = userRepository.save(testUser);
+            // 테스트 User 의 관심상품 등록
+            // 검색어 당 관심상품 10개 등록
+            createTestData(testUser, "신발");
+            createTestData(testUser, "과자");
+            createTestData(testUser, "키보드");
+            createTestData(testUser, "휴지");
+            createTestData(testUser, "휴대폰");
+            createTestData(testUser, "앨범");
+            createTestData(testUser, "헤드폰");
+            createTestData(testUser, "이어폰");
+            createTestData(testUser, "노트북");
+            createTestData(testUser, "무선 이어폰");
+            createTestData(testUser, "모니터");
+        }
 
-        // 테스트 User 의 관심상품 등록
-        // 검색어 당 관심상품 10개 등록
-        createTestData(testUser, "신발");
-        createTestData(testUser, "과자");
-        createTestData(testUser, "키보드");
-        createTestData(testUser, "휴지");
-        createTestData(testUser, "휴대폰");
-        createTestData(testUser, "앨범");
-        createTestData(testUser, "헤드폰");
-        createTestData(testUser, "이어폰");
-        createTestData(testUser, "노트북");
-        createTestData(testUser, "무선 이어폰");
-        createTestData(testUser, "모니터");
     }
 
     private void createTestData(User user, String searchWord) {
